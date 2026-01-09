@@ -31,6 +31,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T>{
         firstNode.next = this.sentinel.next;
         this.sentinel.next = firstNode;
         firstNode.prev = this.sentinel;
+        this.size++;
     }
 
     @Override
@@ -41,6 +42,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T>{
         lastNode.prev = this.sentinel.prev;
         lastNode.next = this.sentinel;
         this.sentinel.prev = lastNode;
+        this.size++;
     }
 
     @Override
@@ -56,31 +58,56 @@ public class LinkedListDeque61B<T> implements Deque61B<T>{
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.sentinel.next == this.sentinel;
     }
 
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     @Override
     public T removeFirst() {
+        if(!this.isEmpty()){
+            T item = this.sentinel.next.item;
+            this.sentinel.next = this.sentinel.next.next;
+            this.sentinel.next.prev = this.sentinel;
+            this.size--;
+            return item;
+        }
         return null;
     }
 
     @Override
     public T removeLast() {
+        if(!this.isEmpty()){
+            T item = this.sentinel.prev.item;
+            this.sentinel.prev = this.sentinel.prev.prev;
+            this.sentinel.prev.next = this.sentinel;
+            this.size--;
+            return item;
+        }
         return null;
     }
 
     @Override
     public T get(int index) {
+        if(index < this.size()){
+            Node currNode = this.sentinel;
+            for(int i = 0; i <= index; i++) currNode = currNode.next;
+            return currNode.item;
+        }
         return null;
     }
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        if(this.isEmpty() || this.size <= index) return null;
+        return getRecursiveHelper(this.sentinel.next, index);
+    }
+
+    private T getRecursiveHelper(Node current, int index){
+        if(index == 0) return current.item;
+        return getRecursiveHelper(current.next, index-1);
     }
 }
